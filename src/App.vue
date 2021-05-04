@@ -10,8 +10,10 @@
         placeholder="Buscar pokemons pelo nome"
         v-model="busca"
       />
-      <!-- <button class="button is-fullwidth is-primary mt-3">Buscar</button> -->
-      <div v-for="(poke, index) in resultadoBusca" :key="poke.url">
+      <button class="button is-fullwidth is-primary mt-3" @click="buscar">
+        Buscar
+      </button>
+      <div v-for="(poke, index) in filteredPokemons" :key="poke.url">
         <Pokemon :name="poke.name" :url="poke.url" :num="index + 1" />
       </div>
     </div>
@@ -26,6 +28,7 @@ export default {
   data() {
     return {
       pokemons: [],
+      filteredPokemons: [],
       busca: "",
     };
   },
@@ -34,15 +37,17 @@ export default {
       .get("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
       .then((response) => {
         this.pokemons = response.data.results;
+        this.filteredPokemons = response.data.results;
       });
   },
   components: { Pokemon },
-  computed: {
-    resultadoBusca: function () {
+  methods: {
+    buscar: function () {
+      this.filteredPokemons = this.pokemons;
       if (this.busca == "" || this.busca == " ") {
-        return this.pokemons;
+        this.filteredPokemons = this.pokemons;
       } else {
-        return this.pokemons.filter(
+        this.filteredPokemons = this.pokemons.filter(
           (pokemon) => pokemon.name == this.busca.toLowerCase()
         );
       }
