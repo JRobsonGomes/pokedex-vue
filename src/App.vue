@@ -1,7 +1,17 @@
 <template>
   <div id="app">
     <div class="column is-half is-offset-one-quarter">
-      <div v-for="(poke, index) in pokemons" :key="index">
+      <img src="./assets/pokeapi.png" alt="pokeapi" />
+      <hr />
+      <h4 class="is-size-4">Pokedex</h4>
+      <input
+        class="input is-primary"
+        type="text"
+        placeholder="Buscar pokemons pelo nome"
+        v-model="busca"
+      />
+      <!-- <button class="button is-fullwidth is-primary mt-3">Buscar</button> -->
+      <div v-for="(poke, index) in resultadoBusca" :key="poke.url">
         <Pokemon :name="poke.name" :url="poke.url" :num="index + 1" />
       </div>
     </div>
@@ -16,6 +26,7 @@ export default {
   data() {
     return {
       pokemons: [],
+      busca: "",
     };
   },
   created: function () {
@@ -26,6 +37,17 @@ export default {
       });
   },
   components: { Pokemon },
+  computed: {
+    resultadoBusca: function () {
+      if (this.busca == "" || this.busca == " ") {
+        return this.pokemons;
+      } else {
+        return this.pokemons.filter(
+          (pokemon) => pokemon.name == this.busca.toLowerCase()
+        );
+      }
+    },
+  },
 };
 </script>
 
